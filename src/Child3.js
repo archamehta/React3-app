@@ -1,111 +1,142 @@
 import React, { Component } from "react";
-import * as d3 from "d3";
+import * as d3 from 'd3';
 import "./App.css"
 
-class Child3 extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  componentDidMount() {
-    var data = {
-      "name": "Root",
-      "children": [
-        {
-          "name": "Branch 1",
-          "children": [
-            {
-              "name": "Leaf 1",
-              "size": 10,
-              "color": "red"
-            },
-            {
-              "name": "Leaf 2",
-              "size": 20,
-              "color": "blue"
-            }
-          ]
-        },
-        {
-          "name": "Branch 2",
-          "children": [
-            {
-              "name": "Leaf 3",
-              "size": 15,
-              "color": "green"
-            },
-            {
-              "name": "Leaf 4",
-              "size": 25,
-              "color": "purple",
-              "children": [
-                {
-                  "name": "Subleaf",
-                  "size": 5,
-                  "color": "orange"
-                }
-              ]
-            }
-          ]
-        }
-      ]
+class Child1 extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+        this.showTooltip = this.showTooltip.bind(this);
+        this.hideTooltip = this.hideTooltip.bind(this);
     }
 
-    var width = 220, height = 600
-    var root = d3.hierarchy(data);
-    console.log(root) // Adds tree related information
+    componentDidMount() {
+        this.updateChart();
+    }
 
-    var treeLayout = d3.tree().size([height, width]);
-    treeLayout(root); // Adds layout positions
-    d3.select(".pat").selectAll(".link").data(root.links()).join("line").attr('class','link').attr('x1',d=>d.source.x).attr('y1',d=>d.source.y).attr('x2',d=>d.target.x).attr('y2',d=>d.target.y)
-    
-  d3.select('.pat')
-  .selectAll('.label')
-  .data(root.descendants())
-  .join('text')
-  .classed('label', true)
-  .attr('x', d => d.x-15)
-  .attr('y', d => d.y-15)
-  .text(d=>{
-    return d.data.name
-  })
-  var tooltip = d3.select("body")
-  .selectAll(".tooltip_div")
-  .data([0])  // binds a single element to the tooltip
-  .join("div")  // joins the data to a div element
-  .attr("class", "tooltip_div")  // adds a CSS class for styling
-  .style("position", "absolute")  // uses absolute positioning
-  .style("visibility", "hidden");  // starts as hidden
-  d3.select('.pat')
-  .selectAll('.node')
-  .data(root.descendants())
-  .join('circle')
-  .classed('node', true)
-  .attr('cx', d => d.x)
-  .attr('cy', d => d.y)
-  .attr('r', 4)
-  .on("mouseover",(event,d)=>{
-    tooltip.html(d.data.size).style("visibility", "visible")
-  })
-  .on("mousemove", (event) =>{
-    tooltip
-      .style("top", event.pageY - 10 + "px")  // positions the tooltip slightly above the cursor
-      .style("left", event.pageX + 10 + "px")
-  })
-  .on("mouseout", (event) =>{
-    tooltip.style("visibility", "hidden")
-  })
+    componentDidUpdate(prevProps) {
+        if (prevProps.data1 !== this.props.data1) {
+            this.updateChart();
+        }
+    }
+
+
+    updateChart() {
+        const { data1 } = this.props;
+        const margin = { top: 10, right: 10, bottom: 40, left: 20 };
+        const width = 500 - margin.left - margin.right;
+        const height = 300 - margin.top - margin.bottom;
+
+        const svg = d3.select(".child1_svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom);
+
+        svg.selectAll("*").remove(); // Clear previous contents
+
+        const container = svg.selectAll(".g_1") // Changed append to selectAll
+            .data([null]) // Bind data
+            .join("g") // Join
+            .attr("class", "g_1")
+            .attr("transform", `translate(${margin.left},${margin.top})`); // Transform
+
+        // Add x-axis label
+        container.selectAll(".x-axis-label") // Changed append to selectAll
+            .data([null]) // Bind data
+            .join("text") // Join
+            .attr("class", "x-axis-label")
+            .attr("transform", `translate(${width / 2}, ${height + margin.top + 20})`)
+            .style("text-anchor", "middle")
+            .text("Total Bill");
+
+        // Add y-axis label
+        container.selectAll(".y-axis-label") // Changed append to selectAll
+            .data([null]) // Bind data
+            .join("text") // Join
+            .attr("class", "y-axis-label")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - margin.left)
+            .attr("x", 0 - (height / 2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text("Tips");
+
+        //Add x-axis
+        const x_data = data1.map(item => item.total_bill);
+        const x_scale = d3.scaleLinear().domain([0, d3.max(x_data)]).range([margin.left, width]);
+        container.selectAll(".x_axis_g")
+            .data([null])
+            .join("g")
+            .attr("class", "x_axis_g")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(x_scale));
+
+        //add y-axis
+        const y_data = data1.map(item => item.tip);
+        const y_scale = d3.scaleLinear().domain([0, d3.max(y_data)]).range([height, 0]);
+        container.selectAll(".y_axis_g")
+            .data([null])
+            .join("g")
+            .attr("class", "y_axis_g")
+            .attr("transform", `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y_scale));
+
+        // Add circles representing data points
+        container.selectAll(".data-circle") // Select existing circles
+            .data(data1) // Bind data
+            .join("circle") // Join
+            .attr("class", "data-circle")
+            .attr("cx", d => x_scale(d.total_bill))
+            .attr("cy", d => y_scale(d.tip))
+            .attr("r", 3)
+            .style("fill", "#69b3a2")
+            .on("mouseover", this.showTooltip)
+            .on("mouseout", this.hideTooltip);
+    }
+
+    showTooltip(event, d) {
+        const tooltip = d3.select(".tooltip");
+        const tooltipWidth = 2000; // Adjust the width of the tooltip as needed
+        const tooltipHeight = 50; // Adjust the height of the tooltip as needed
+        const xOffset = 20; // Offset from the mouse pointer
+        const yOffset = 100; // Offset from the data point
+
+        // Calculate the position of the tooltip
+        let tooltipX = event.pageX + xOffset;
+        let tooltipY = event.pageY - yOffset;
+
+        // Adjust tooltip position to keep it within the bounds of the SVG
+        const svgWidth = 10000; // Adjust according to your SVG width
+        const svgHeight = 300; // Adjust according to your SVG height
+        if (tooltipX + tooltipWidth > svgWidth) {
+            tooltipX = event.pageX - tooltipWidth - xOffset;
+        }
+        if (tooltipY + tooltipHeight > svgHeight) {
+            tooltipY = event.pageY - tooltipHeight - yOffset;
+        }
+
+        // Update the tooltip content and position
+        tooltip.style("display", "block")
+            .style("left", tooltipX + "px")
+            .style("top", tooltipY + "px")
+            .style("font-size", "10px") // Adjust font size as needed
+            .html(`Total Bill: ${d.total_bill.toFixed(2)}<br>Tips: ${d.tip.toFixed(2)}`);
+    }
+
+
+    hideTooltip() {
+        d3.select(".tooltip").style("display", "none");
+    }
+
+    render() {
+        return (
+            <div>
+                <svg className="child1_svg">
+                    <g className="g_1"></g>
+                </svg>
+                <div className="tooltip"></div>
+            </div>
+        );
+    }
 }
 
-  render() {
-    return (
-      <svg width="700" height="350">
-        <g className="pat" transform="translate(0,50)"></g>
-      </svg>
-
-    );
-  }
-}
-
-export default Child3;
+export default Child1;
