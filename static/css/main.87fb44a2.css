@@ -1,0 +1,2 @@
+.parent{display:flex;flex-direction:column;row-gap:10px}.child1,.child2{border:1px solid #d4d4d4;height:300px;padding:5px}.header{color:purple;text-align:center}.tooltip{background-color:#fff;border:1px solid #ccc;font-size:14px;padding:5px;position:absolute;z-index:9999}.tooltip.hidden{display:none}.link{stroke:red;stroke-width:2px}.node{fill:green}.tooltip_div{background-color:#adff2f;height:300px;width:200px}
+/*# sourceMappingURL=main.87fb44a2.css.map*/

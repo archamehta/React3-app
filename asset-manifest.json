@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/React3-App/static/css/main.924dbb3f.css",
-    "main.js": "/React3-App/static/js/main.abcb9a81.js",
-    "static/js/453.64105b0e.chunk.js": "/React3-App/static/js/453.64105b0e.chunk.js",
-    "static/media/SampleDataset.csv": "/React3-App/static/media/SampleDataset.1a13c1758e940941af06.csv",
-    "index.html": "/React3-App/index.html",
-    "main.924dbb3f.css.map": "/React3-App/static/css/main.924dbb3f.css.map",
-    "main.abcb9a81.js.map": "/React3-App/static/js/main.abcb9a81.js.map",
-    "453.64105b0e.chunk.js.map": "/React3-App/static/js/453.64105b0e.chunk.js.map"
+    "main.css": "/React3-app/static/css/main.87fb44a2.css",
+    "main.js": "/React3-app/static/js/main.25f0d6b7.js",
+    "static/js/453.64105b0e.chunk.js": "/React3-app/static/js/453.64105b0e.chunk.js",
+    "static/media/SampleDataset.csv": "/React3-app/static/media/SampleDataset.1a13c1758e940941af06.csv",
+    "index.html": "/React3-app/index.html",
+    "main.87fb44a2.css.map": "/React3-app/static/css/main.87fb44a2.css.map",
+    "main.25f0d6b7.js.map": "/React3-app/static/js/main.25f0d6b7.js.map",
+    "453.64105b0e.chunk.js.map": "/React3-app/static/js/453.64105b0e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.924dbb3f.css",
-    "static/js/main.abcb9a81.js"
+    "static/css/main.87fb44a2.css",
+    "static/js/main.25f0d6b7.js"
   ]
 }
