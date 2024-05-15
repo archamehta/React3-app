@@ -138,6 +138,10 @@ class Child2 extends Component {
             </div>
         );
     }
+    //"homepage": "https://archamehta.github.io/React3-app",
+    //"predeploy": "npm run build",
+    //"deploy": "gh-pages -d build",
+
 }
 
 export default Child2;
